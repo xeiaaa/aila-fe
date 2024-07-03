@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
-import useNoteContext from "../hooks/useNoteContext";
+import useNoteContext from "../context/useNoteContext";
 
 const EditNoteModal = () => {
   const { setSelectedNote, selectedNote } = useNoteContext();

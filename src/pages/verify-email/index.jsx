@@ -52,7 +52,7 @@ const VerifyEmailPage = () => {
             <p className="text-sm text-center">
               Your email has been verified. You can now log in!
             </p>
-            <Link to="/signin" className="text-secondary">
+            <Link to="/signin" className="text-[#4DB571]">
               Sign In
             </Link>
           </Flex> : <p className="text-sm text-center">Verifying your email</p>

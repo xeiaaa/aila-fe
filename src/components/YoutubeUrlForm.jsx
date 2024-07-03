@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
-import useNoteContext from "../hooks/useNoteContext";
+import useNoteContext from "../context/useNoteContext";
 
 const UrlForm = ({ closeModal = () => {} }) => {
   const queryClient = useQueryClient();
@@ -51,30 +51,33 @@ const UrlForm = ({ closeModal = () => {} }) => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <Flex gap={5} vertical>
-        <p>Note:</p>
+        <p className="dark:text-textDark">Note:</p>
         <Input
           placeholder="Enter note title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className="dark:!bg-transparent dark:placeholder:text-textDark"
         />
       </Flex>
       <Flex gap={5} vertical>
-        <p>Enter a valid Youtube URL:</p>
+        <p className="dark:text-textDark">Enter a valid Youtube URL:</p>
         <Input
           placeholder="Enter youtube url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
+          className="dark:!bg-transparent dark:placeholder:text-textDark"
         />
       </Flex>
-        <Button
-          type="primary"
-          htmlType="submit"
-          style={{ alignSelf: "end" }}
-          loading={loading}
-          disabled={!title.trim() || !validateYouTubeUrl(url)}
-        >
-          Submit
-        </Button>
+      <Button
+        type="primary"
+        htmlType="submit"
+        style={{ alignSelf: "end" }}
+        loading={loading}
+        disabled={!title.trim() || !validateYouTubeUrl(url)}
+        className="dark:text-textDark"
+      >
+        Submit
+      </Button>
     </form>
   );
 };

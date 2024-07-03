@@ -7,7 +7,7 @@ import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
 import aila from "../assets/aila-icon.png";
 import messageIcon from "../assets/message.png";
-import { useSubscription } from "../hooks/SubscriptionContext";
+import { useSubscription } from "../context/SubscriptionContext";
 
 function ChatBox({ note }) {
   const [query, setQuery] = useState("");
@@ -112,7 +112,7 @@ function ChatBox({ note }) {
   };
 
   return (
-    <Flex vertical className="flex-1 justify-between">
+    <Flex vertical className="flex-1 justify-between p-5 md:p-0">
       <div className="flex-1 relative">
         <Flex
           vertical
@@ -156,13 +156,13 @@ function ChatBox({ note }) {
                           <div className="w-7">
                             <img src={aila} />
                           </div>
-                          <div className="flex-1 rounded-b-xl rounded-r-xl bg-white p-3 shadow">
+                          <div className="flex-1 rounded-b-xl rounded-r-xl bg-white p-3 shadow dark:bg-tertiaryDark dark:text-textDark">
                             {message.message}
                           </div>
                         </Flex>
                       ) : (
                         <Flex className="justify-end">
-                          <div className="rounded-t-xl rounded-l-xl bg-primary p-3 text-white shadow">
+                          <div className="rounded-t-xl rounded-l-xl bg-primary p-3 text-white shadow dark:bg-primaryDark">
                             {message.message}
                           </div>
                         </Flex>
@@ -176,7 +176,7 @@ function ChatBox({ note }) {
                 <div className="w-7">
                   <img src={aila} />
                 </div>
-                <div className="rounded-xl bg-white shadowh-6 px-3 flex items-center w-12">
+                <div className="rounded-xl bg-white shadow h-6 px-3 flex items-center w-12">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
                     <circle
                       fill="#D3D3D3"
@@ -251,9 +251,9 @@ function ChatBox({ note }) {
           handleSendQuery(query);
         }}
       >
-        <Flex>
+        <Flex className="pt-3 md:pt-0">
           <Input
-            className="m-0 w-full resize-none text-sm py-2 pl-3 pr-8 rounded-lg border border-gray-300 hover:border-primary focus:border-primary"
+            className="m-0 w-full resize-none text-sm py-2 pl-3 pr-8 rounded-lg border border-gray-300 hover:border-primary focus:border-primary dark:bg-tertiaryDark dark:text-textDark dark:border-borderDark dark:placeholder:text-gray-400"
             placeholder="Ask any question..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -267,8 +267,7 @@ function ChatBox({ note }) {
               (mutation && mutation.isPending) ||
               (dataMessages && dataMessages.isPending)
             }
-            className="absolute bottom-[0.100rem] sm:bottom-[1.1200rem] right-1 sm:right-4 rounded-lg border p-0.5 text-white transition-colors bg-transparent hover:!bg-transparent border-none"
-            // style={{ background: 'transparent', border: 'none', padding: 0 }}
+            className="absolute bottom-[1.300rem] sm:bottom-[1.1200rem] right-6 sm:right-4 rounded-lg border p-0.5 text-white transition-colors bg-transparent hover:!bg-transparent border-none"
           />
         </Flex>
       </form>

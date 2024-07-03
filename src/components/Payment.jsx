@@ -1,4 +1,4 @@
-import { Input, Button, Modal } from "antd";
+import { Input, Button, Modal, Drawer } from "antd";
 import gcash from "../assets/GCash_logo.png";
 import { useQuery } from "@tanstack/react-query";
 import authAxios from "../api/authAxios";
@@ -10,15 +10,20 @@ import gcashStep1 from "../assets/step1.png";
 import gcashStep2 from "../assets/step2.png";
 import gcashStep3 from "../assets/step3.png";
 import gcashStep4 from "../assets/step4.png";
+import { useWindowSize } from "../hooks/useWindowSize";
+import { useState } from "react";
 
 const Payment = ({
   isModalOpen,
+  setIsModalOpen,
   handleOk,
   handleCancel,
-  offerType,
-  offerPrice,
   handleSubscription,
 }) => {
+  const { width: screenWidth } = useWindowSize();
+  const isMobile = screenWidth < 640;
+  const [open, setOpen] = useState(false);
+
   const { data: profile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
@@ -33,10 +38,13 @@ const Payment = ({
   };
 
   const handlePayment = () => {
-    const newWindow = window.open("", "_blank", "width=800,height=500");
+    if (isMobile) {
+      openPayment();
+    } else {
+      const newWindow = window.open("", "_blank", "width=800,height=500");
 
-    // content
-    const Content = `
+      // content
+      const Content = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -112,13 +120,24 @@ const Payment = ({
     </body>
     </html>
     `;
-    newWindow.document.write(Content);
-    newWindow.document.close();
-    handleCancel();
+      newWindow.document.write(Content);
+      newWindow.document.close();
+      handleCancel();
 
-    newWindow.onbeforeunload = () => {
-      handleConfirmSubscription();
-    };
+      newWindow.onbeforeunload = () => {
+        handleConfirmSubscription();
+      };
+    }
+  };
+
+  const openPayment = () => {
+    setOpen(true);
+    setIsModalOpen(false);
+  };
+
+  const closePayment = () => {
+    setOpen(false);
+    handleConfirmSubscription();
   };
 
   return (
@@ -129,10 +148,10 @@ const Payment = ({
         onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
-        width={500}
+        width={400}
       >
         <div className="flex">
-          <div className="flex flex-col justify-center items-center py-5 text-center">
+          {/* <div className="flex flex-col justify-center items-center py-5 text-center">
             <div>
               <div className="flex justify-center items-baseline my-3">
                 <p className="text-base">
@@ -141,9 +160,9 @@ const Payment = ({
                 </p>
               </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-5 pl-5 py-5 w-full">
-            <div className="flex flex-col gap-1">
+          </div> */}
+          <div className="flex flex-col gap-5 py-3 w-full">
+            <div className="flex flex-col gap-2">
               <label className="font-medium">Contact Information</label>
               <Input
                 prefix="Email:"
@@ -151,7 +170,7 @@ const Payment = ({
                 value={profile && profile.email}
               />
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <p className="font-medium">Payment Method</p>
               <div
                 className="flex items-center rounded-lg p-2 w-full"
@@ -162,7 +181,7 @@ const Payment = ({
 
               <Button
                 key="submit"
-                className="text-white hover:!text-white bg-primary hover:!bg-[#4aa3e8] font-medium rounded-lg text-sm h-10"
+                className="text-white hover:!text-white bg-primary hover:!bg-primaryHover font-medium rounded-lg text-sm h-10 mt-3"
                 block
                 onClick={handlePayment}
               >
@@ -172,6 +191,89 @@ const Payment = ({
           </div>
         </div>
       </Modal>
+      <Drawer
+        placement="bottom"
+        // closable={false}
+        onClose={closePayment}
+        open={open}
+        key={"bottom"}
+        height="100%"
+      >
+        <nav className="bg-[#1d59dc] w-full py-1.5 px-5">
+          <img src={gcashWhite} alt="logo" width="62" height="15" />
+        </nav>
+        <div className="mt-8 pb-5 px-10 md:px-16 text-center">
+          <p className="text-[#292b30] text-sm font-bold">
+            Link GCash to pay in Canva
+          </p>
+          <p className="mt-3 text-xs text-[#808080]">
+            To ensure the safety of your GCash Account, please continue with the
+            linking process using your phone.
+          </p>
+        </div>
+        <div className="relative flex flex-col justify-center items-center border border-black rounded-md p-5 mx-4 mb-24">
+          <div className="flex justify-center items-center gap-7">
+            <img
+              src={scan}
+              alt="scan"
+              width="52.16"
+              height="52.16"
+              className="absolute left-5 top-5"
+            />
+            <p className="mt-9 md:mt-0 p-4 text-[#007dff] text-center font-semibold text-sm">
+              Scan the QR code with GCash App to continue
+            </p>
+          </div>
+          <div>
+            <img src={QRCode} alt="QRCode" width="130" height="130" />
+          </div>
+          <div className="flex flex-col justify-start items-start text-[#2a2b30] w-full mt-4">
+            <p className="text-xs mb-1 font-semibold">Instructions</p>
+            <div className="bg-[#2a2b30] h-[1px] w-52"></div>
+          </div>
+          <div className="flex flex-col md:flex-row pt-3">
+            <div className="flex flex-col justify-between items-center p-2 w-full">
+              <div className="rounded-full bg-[#007dff] text-[8px] mb-3 py-1 px-1.5">
+                <p className="text-white">01</p>
+              </div>
+              <p className="text-[8px] text-[#58595b] text-center mb-3">
+                Open your GCash app. In your dashboard, tap &quot;
+                <span className="font-semibold">Pay QR.</span>&quot;
+              </p>
+              <img src={gcashStep1} alt="step 1" className="w-full" />
+            </div>
+            <div className="flex flex-col justify-between items-center p-2 w-full">
+              <div className="rounded-full bg-[#007dff] text-[8px] mb-3 py-1 px-1.5">
+                <p className="text-white">02</p>
+              </div>
+              <p className="text-[8px] text-[#58595b] text-center mb-3">
+                Tap &quot;<span className="font-semibold">Scan QR Code.</span>
+                &quot;
+              </p>
+              <img src={gcashStep2} alt="step 2" className="w-full" />
+            </div>
+            <div className="flex flex-col justify-between items-center p-2 w-full">
+              <div className="rounded-full bg-[#007dff] text-[8px] mb-3 py-1 px-1.5">
+                <p className="text-white">03</p>
+              </div>
+              <p className="text-[8px] text-[#58595b] text-center mb-3">
+                Tap &quot;<span className="font-semibold">Authorize</span>&quot;
+                to proceed with account linking.
+              </p>
+              <img src={gcashStep3} alt="step 3" className="w-full" />
+            </div>
+            <div className="flex flex-col justify-between items-center p-2 w-full">
+              <div className="rounded-full bg-[#007dff] text-[8px] mb-3 py-1 px-1.5">
+                <p className="text-white">04</p>
+              </div>
+              <p className="text-[8px] text-[#58595b] text-center mb-3">
+                Wait for the text message confirming your linked GCash account.
+              </p>
+              <img src={gcashStep4} alt="step 4" className="w-full" />
+            </div>
+          </div>
+        </div>
+      </Drawer>
     </>
   );
 };

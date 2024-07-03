@@ -1,13 +1,4 @@
-import {
-  Button,
-  Card,
-  Col,
-  Dropdown,
-  Row,
-  Segmented,
-  Typography,
-  Menu,
-} from "antd";
+import { Button, Card, Col, Dropdown, Row, Typography, Menu } from "antd";
 import { useState } from "react";
 import { Header } from "antd/es/layout/layout";
 import { useNavigate } from "react-router-dom";
@@ -69,14 +60,14 @@ const Media = () => {
 
   return (
     <>
-      <Header className="flex items-center justify-center bg-quaternary relative shadow">
+      <Header className="flex items-center justify-center bg-tertiary relative shadow dark:bg-secondaryDark">
         <div className="logo absolute left-8 mr-5 flex items-center">
           <Button
-            icon={<ArrowLeftOutlined />}
+            icon={<ArrowLeftOutlined className="dark:text-textDark" />}
             onClick={() => {
               navigate("/notes");
             }}
-            className="border-none"
+            className="border-none dark:!bg-tertiaryDark"
           ></Button>
         </div>
         <Title level={4} style={{ color: "white" }}>
@@ -93,36 +84,43 @@ const Media = () => {
           <Menu.Item
             key="Audios"
             icon={<PiFileAudio className="!text-primary text-lg" />}
+            className="dark:text-textDark dark:hover:!text-textDark"
           >
             Audios
           </Menu.Item>
           <Menu.Item
             key="Videos"
             icon={<AiOutlineVideoCamera className="!text-primary text-lg" />}
+            className="dark:text-textDark dark:hover:!text-textDark"
           >
             Videos
           </Menu.Item>
           <Menu.Item
             key="Archived"
             icon={<RiArchiveDrawerLine className="!text-primary text-lg" />}
+            className="dark:text-textDark dark:hover:!text-textDark"
           >
             Archived
           </Menu.Item>
           <Menu.Item
             key="History"
             icon={<BsClockHistory className="!text-primary text-lg" />}
+            className="dark:text-textDark dark:hover:!text-textDark"
           >
             History
           </Menu.Item>
         </Menu>
         {value === "Videos" && (
-          <Row className="gap-5 py-7">
+          <Row className="grid grid-cols-4 gap-2 py-7">
             {Array.isArray(medias) &&
               medias
                 .filter((media) => media.url && media.type === "video")
                 .map((media) => (
-                  <Col xs={24} sm={6} key={media._id}>
-                    <Card>
+                  <Col key={media._id}>
+                    <Card
+                      className="relative dark:bg-secondaryDark dark:border-borderDark shadow-md"
+                      bordered={false}
+                    >
                       <Dropdown
                         overlay={menu(media._id)}
                         placement="bottomRight"
@@ -132,7 +130,10 @@ const Media = () => {
                         <Button
                           shape="circle"
                           size="small"
-                          icon={<EllipsisOutlined />}
+                          icon={
+                            <EllipsisOutlined className="dark:text-textDark" />
+                          }
+                          className="dark:bg-secondaryDark dark:border-textDark"
                         />
                       </Dropdown>
                       <video
@@ -143,7 +144,7 @@ const Media = () => {
                         <source src={media.url} type="video/mp4" />
                         Your browser does not support the video tag.
                       </video>
-                      <p className="mt-2 font-semibold">
+                      <p className="mt-2 font-semibold dark:text-textDark">
                         {media.note && media.note.title}
                       </p>
                     </Card>
@@ -153,13 +154,16 @@ const Media = () => {
         )}
 
         {value === "Audios" && (
-          <Row className="gap-5 py-7">
+          <Row className="grid grid-cols-4 gap-2 py-7">
             {Array.isArray(medias) &&
               medias
                 .filter((media) => media.url && media.type === "audio")
                 .map((media) => (
-                  <Col xs={24} sm={6} key={media._id}>
-                    <Card className="relative">
+                  <Col key={media._id}>
+                    <Card
+                      className="relative dark:bg-secondaryDark dark:border-borderDark shadow-md"
+                      bordered={false}
+                    >
                       <Dropdown
                         overlay={menu(media._id)}
                         placement="bottomRight"
@@ -169,7 +173,10 @@ const Media = () => {
                         <Button
                           shape="circle"
                           size="small"
-                          icon={<EllipsisOutlined />}
+                          icon={
+                            <EllipsisOutlined className="dark:text-textDark" />
+                          }
+                          className="dark:bg-secondaryDark dark:border-textDark"
                         />
                       </Dropdown>
                       <audio
@@ -181,7 +188,7 @@ const Media = () => {
                         <source src={media.url} type="audio/mpeg" />
                         Your browser does not support the audio tag.
                       </audio>
-                      <p className="mt-2 font-semibold">
+                      <p className="mt-2 font-semibold dark:text-textDark">
                         {media.note && media.note.title}
                       </p>
                     </Card>

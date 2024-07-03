@@ -1,27 +1,41 @@
-import { Flex, Avatar, Drawer, Dropdown, Layout, Menu, Modal } from "antd";
+import {
+  Drawer,
+  Dropdown,
+  Layout,
+  Menu,
+  Space,
+  Flex,
+  Divider,
+  Avatar,
+} from "antd";
 import { Link, useLocation, Navigate, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import SettingsModal from "./SettingsModal";
 
 import logo from "../assets/logo.svg";
-import useNoteContext from "../hooks/useNoteContext";
+import useNoteContext from "../context/useNoteContext";
 import {
   FolderOutlined,
   UnorderedListOutlined,
   UserOutlined,
   LogoutOutlined,
-  HistoryOutlined,
-  InboxOutlined,
+  HighlightOutlined,
   SettingOutlined,
+  DownOutlined,
 } from "@ant-design/icons";
 import { SlDiamond } from "react-icons/sl";
-import { MdOutlinePrivacyTip } from "react-icons/md";
 import aila from "../assets/aila.svg";
+import { MdOutlinePrivacyTip } from "react-icons/md";
 
 import authAxios from "../api/authAxios";
 import { TOKEN_KEY } from "../constants";
 import { API_URL } from "../config";
 import ProfilePage from "./Profile";
+import DarkModeToggle from "./DarkModeToggle";
+import { useWindowSize } from "../hooks/useWindowSize";
+import { useQuery } from "@tanstack/react-query";
+
 const { Header } = Layout;
 
 const Navbar = () => {
@@ -31,22 +45,59 @@ const Navbar = () => {
   const [isSettingsDrawerOpen, setIsSettingsDrawerOpen] = useState(false);
   const [isSettingsContentDrawerOpen, setIsSettingsContentDrawerOpen] =
     useState(false);
+  const [selectedKey, setSelectedKey] = useState("1");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const showProfileModal = () => {
-    setIsModalOpen(true);
+  const { width: screenWidth } = useWindowSize();
+  const isMobile = screenWidth < 640;
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { data } = await authAxios.get(`${API_URL}/auth/me`);
+      return data;
+    },
+    staleTime: Infinity,
+  });
+
+  const getFirstAndSecondName = (fullName) => {
+    if (!fullName) return "Loading...";
+    const names = fullName.split(" ");
+    return names.slice(0, 2).join(" ");
   };
+
+  const handleSettingsClick = (e) => {
+    setSelectedKey(e.key);
+    if (isMobile) {
+      setIsSettingsContentDrawerOpen(true);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  // const handleMenuClick = (e) => {
+  //   setSelectedKey(e.key);
+  // };
+
   const handleOk = () => {
     setIsModalOpen(false);
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleSettingsClick = () => {
-    setIsSettingsContentDrawerOpen(true);
+  const renderSettingsContent = () => {
+    switch (selectedKey) {
+      case "1":
+        return <ProfilePage />;
+      case "2":
+        return <DarkModeToggle />;
+      default:
+        return null;
+    }
   };
 
   const tokensString = localStorage.getItem(TOKEN_KEY);
@@ -73,27 +124,62 @@ const Navbar = () => {
       console.error({ ERROR: error });
     }
   };
-  const location = useLocation();
-  const isNotePage =
-    location.pathname === "/" || location.pathname === "/notes";
+
+  const getInitial = (name) => {
+    return name ? name.charAt(0).toUpperCase() : <UserOutlined />;
+  };
 
   const items = [
     {
       key: "1",
-      label: "Profile",
-      onClick: showProfileModal,
+      label: (
+        <Flex vertical>
+          <p className="text-gray-400 text-xs mb-1">Signed in as</p>
+          <Flex className="gap-2 items-center">
+            <Avatar size={30} className="dark:bg-textDark">
+              {getInitial(profile?.name)}
+            </Avatar>
+            <Flex vertical>
+              <span className="font-medium -mb-1">
+                {profile?.name || "Loading..."}
+              </span>
+              <span className="text-gray-400">
+                {profile?.email || "Loading..."}
+              </span>
+            </Flex>
+          </Flex>
+          <Divider className="mt-2 mb-0" />
+        </Flex>
+      ),
+      className:
+        "dark:!bg-secondaryDark dark:!text-textDark dark:!rounded-none dark:hover:!bg-tertiaryDark",
     },
     {
       key: "2",
-      label: "Terms & policies",
-      onClick: () => navigate("/policies"),
+      label: <span>Settings</span>,
+      onClick: handleSettingsClick,
+      className:
+        "dark:!bg-secondaryDark dark:!text-textDark dark:!rounded-none dark:hover:!bg-tertiaryDark",
     },
     {
       key: "3",
-      label: "Logout",
+      label: <span>Legal Center</span>,
+      onClick: () => navigate("/policies"),
+      className:
+        "dark:!bg-secondaryDark dark:!text-textDark dark:!rounded-none dark:hover:!bg-tertiaryDark",
+    },
+    {
+      key: "4",
+      label: <span>Logout</span>,
       onClick: handleLogout,
+      className:
+        "dark:!bg-secondaryDark dark:!text-textDark dark:!rounded-none dark:hover:!bg-tertiaryDark",
     },
   ];
+
+  const location = useLocation();
+  const isNotePage =
+    location.pathname === "/" || location.pathname === "/notes";
 
   if (!tokensString) {
     return <Navigate to="/signin" state={{ from: location }} replace />;
@@ -103,7 +189,7 @@ const Navbar = () => {
     return (
       <>
         <div className="hidden sm:block drop-shadow-sm">
-          <Header className="flex items-center justify-between bg-quaternary px-5 shadow">
+          <Header className="flex items-center justify-between bg-tertiary px-5 shadow dark:bg-secondaryDark">
             <div className="logo mr-5">
               <Link to="/notes" className="flex items-center justify-center">
                 <img src={logo} />
@@ -111,7 +197,7 @@ const Navbar = () => {
             </div>
             <Menu
               mode="horizontal"
-              className="flex-1 text-right justify-end bg-transparent"
+              className="flex-1 text-right justify-end bg-transparent dark:!bg-secondaryDark"
             >
               <Menu.Item key="1">
                 <Link
@@ -140,11 +226,11 @@ const Navbar = () => {
                 </Link>
               </Menu.Item>
               <Menu.Item key="3">
-                <Dropdown menu={{ items }}>
-                  <Avatar
-                    className="bg-white"
-                    icon={<UserOutlined className="text-primary" />}
-                  />
+                <Dropdown menu={{ items }} placement="bottomRight">
+                  <Space className="text-white">
+                    {getFirstAndSecondName(profile?.name) || "Loading..."}
+                    <DownOutlined />
+                  </Space>
                 </Dropdown>
               </Menu.Item>
             </Menu>
@@ -155,7 +241,7 @@ const Navbar = () => {
           <Header
             className={`flex items-center px-8 ${
               hasNotes ? "justify-end" : "justify-center"
-            } bg-quaternary`}
+            } bg-tertiary dark:bg-secondaryDark`}
           >
             {hasNotes ? (
               <div className="w-[53vw] flex justify-between items-center">
@@ -187,14 +273,18 @@ const Navbar = () => {
           onClose={() => {
             setIsDrawerOpen(false);
           }}
-          className="rounded-t-2xl"
+          className="rounded-t-2xl dark:bg-secondaryDark dark:text-textDark"
         >
-          <Menu mode="vertical" className="flex flex-col text-lg">
+          <Menu
+            mode="vertical"
+            className="flex flex-col text-lg dark:bg-secondaryDark dark:text-textDark px-6"
+          >
             <Menu.Item
               key="1"
               style={{
                 display: "flex",
               }}
+              className="dark:text-textDark"
             >
               <Link to="/projects">
                 <FolderOutlined
@@ -209,6 +299,7 @@ const Navbar = () => {
               style={{
                 display: "flex",
               }}
+              className="dark:text-textDark"
             >
               <Link to="/pricing">
                 <SlDiamond
@@ -227,6 +318,7 @@ const Navbar = () => {
                 setIsSettingsDrawerOpen(true);
                 setIsDrawerOpen(false);
               }}
+              className="dark:text-textDark"
             >
               <SettingOutlined
                 className="text-primary mr-2"
@@ -234,14 +326,24 @@ const Navbar = () => {
               />
               Settings
             </Menu.Item>
-            <Menu.Item key="4" onClick={() => navigate("/policies")}>
+            <Menu.Item
+              key="5"
+              onClick={() => navigate("/policies")}
+              className="dark:text-textDark"
+            >
               <MdOutlinePrivacyTip
                 className="text-primary mr-2"
                 style={{ fontSize: "24px" }}
               />
-              Terms & policies
+              Legal Center
             </Menu.Item>
-            <Menu.Item key="5" style={{}} onClick={handleLogout}>
+
+            <Menu.Item
+              key="6"
+              style={{}}
+              onClick={handleLogout}
+              className="dark:text-textDark"
+            >
               <LogoutOutlined
                 className="text-primary mr-2"
                 style={{ fontSize: "24px" }}
@@ -252,19 +354,11 @@ const Navbar = () => {
         </Drawer>
 
         {/* Settings modal */}
-        <Modal
-          title="Profile"
-          open={isModalOpen}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          footer={null}
-          width={500}
-        >
-          <Flex className="justify-center items-center p-7">
-            <ProfilePage />
-          </Flex>
-        </Modal>
-
+        <SettingsModal
+          visible={isModalOpen}
+          handleOk={handleOk}
+          handleCancel={handleCancel}
+        />
         {/* Settings Drawer */}
         <Drawer
           placement="bottom"
@@ -274,13 +368,17 @@ const Navbar = () => {
             setIsSettingsDrawerOpen(false);
             setIsDrawerOpen(true);
           }}
-          className="rounded-t-2xl"
+          className="rounded-t-2xl dark:bg-secondaryDark dark:text-textDark"
         >
-          <Menu mode="vertical" className="flex flex-col text-lg">
+          <Menu
+            mode="vertical"
+            className="flex flex-col text-lg dark:bg-secondaryDark px-6"
+          >
             <Menu.Item
               key="1"
               style={{ fontSize: "18px" }}
               onClick={handleSettingsClick}
+              className="dark:text-textDark dark:active:text-text "
             >
               <UserOutlined
                 className="text-primary mr-2"
@@ -292,23 +390,13 @@ const Navbar = () => {
               key="2"
               style={{ fontSize: "18px" }}
               onClick={handleSettingsClick}
+              className="dark:text-textDark dark:active:text-text "
             >
-              <InboxOutlined
+              <HighlightOutlined
                 className="text-primary mr-2"
                 style={{ fontSize: "24px" }}
               />
-              Archived
-            </Menu.Item>
-            <Menu.Item
-              key="3"
-              style={{ fontSize: "18px" }}
-              onClick={handleSettingsClick}
-            >
-              <HistoryOutlined
-                className="text-primary mr-2"
-                style={{ fontSize: "24px" }}
-              />
-              History
+              Appearance
             </Menu.Item>
           </Menu>
         </Drawer>
@@ -319,9 +407,10 @@ const Navbar = () => {
           closable={true}
           open={isSettingsContentDrawerOpen}
           onClose={() => setIsSettingsContentDrawerOpen(false)}
-          height="100%"
+          height="42%"
+          className="dark:bg-secondaryDark dark:text-textDark"
         >
-          <ProfilePage />{" "}
+          {renderSettingsContent()}
         </Drawer>
       </>
     );

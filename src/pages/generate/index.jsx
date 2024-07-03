@@ -118,22 +118,24 @@ const Generate = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header className="flex items-center justify-between bg-white py-4 px-7 sm:px-12">
-        <div className="logo bg-white mr-5 flex items-center gap-8">
-          <Button
-            icon={<ArrowLeftOutlined />}
-            onClick={() => {
-              navigate("/notes");
-            }}
-          ></Button>
-        </div>
+      <Header className="flex items-center justify-between bg-tertiary py-4 px-7 sm:px-12 dark:bg-secondaryDark">
+        <Button
+          icon={<ArrowLeftOutlined className="dark:text-textDark" />}
+          onClick={() => {
+            navigate("/notes");
+          }}
+          className="border-none dark:!bg-tertiaryDark"
+        ></Button>
 
-        <Button type="primary" className="bg-primary hover:!bg-[#359EDD]">
+        <Button
+          type="primary"
+          className="bg-primary hover:!bg-primaryHover dark:bg-primaryDark"
+        >
           Submit
         </Button>
       </Header>
 
-      <div className="flex flex-1 w-full bg-generateBackground">
+      <div className="flex flex-1 w-full bg-secondary dark:bg-backgroundDark">
         {(videoStatus && videoStatus.status === "processing") ||
         (audioStatus && audioStatus.status === "processing") ? (
           <div className="flex items-center justify-center flex-1">
@@ -171,7 +173,7 @@ const Generate = () => {
               <div className="fixed left-0 top-1/2 z-40" onClick={toggleTab}>
                 {showTab ? (
                   <div
-                    className="hidden sm:block py-4 px-0.5 rounded-r-2xl cursor-pointer bg-white"
+                    className="hidden sm:block py-4 px-0.5 rounded-r-2xl cursor-pointer bg-white dark:bg-secondaryDark border-t-2 border-r-2 border-b-2 border-l-0 border-solid border-t-secondary border-r-secondary border-b-secondary dark:border-borderDark"
                     style={{
                       transform:
                         "translateX(328px) translateY(-50%) rotate(0deg) translateZ(0px)",
@@ -181,7 +183,7 @@ const Generate = () => {
                   </div>
                 ) : (
                   <div
-                    className="py-5 px-0.5 rounded-l-2xl cursor-pointer bg-white"
+                    className="py-5 px-0.5 rounded-l-2xl cursor-pointer bg-white dark:bg-tertiaryDark"
                     style={{
                       transform:
                         "translateX(0px) translateY(-50%) rotate(180deg) translateZ(0px)",

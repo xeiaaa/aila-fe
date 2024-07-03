@@ -14,7 +14,7 @@ const CreateFolderMainContent = () => {
   return (
     <>
       <Button
-        className="flex flex-1 items-center w-full sm:w-fit h-full max-w-96 rounded-xl py-4 px-5 border-solid border-2 !bg-transparent border-tertiary hover:!border-[#359EDD]"
+        className="flex flex-1 items-center w-full sm:w-fit h-full max-w-96 rounded-xl py-4 px-5 border-solid border-2 !bg-transparent border-secondary hover:!border-[#359EDD]"
         onClick={showModal}
       >
         <Flex gap={15}>

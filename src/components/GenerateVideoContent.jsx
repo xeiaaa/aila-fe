@@ -5,7 +5,7 @@ function GenerateVideoContent({ note, setNote, video }) {
   if (!note) return null;
   return (
     <>
-      <div className="basis-3/5 bg-generateBackground flex justify-center items-center">
+      <div className="basis-3/5 bg-secondary flex justify-center items-center dark:bg-backgroundDark">
         {video && (
           <>
             <video
@@ -19,15 +19,19 @@ function GenerateVideoContent({ note, setNote, video }) {
           </>
         )}
       </div>
-      <div className="basis-2/5 flex justify-center items-end bg-generateBackground">
-        <div className="w-full bg-white xl:w-[53.125rem] 2xl:w-[65rem] p-5 mb-5 mx-5 sm:mx-0 rounded-lg">
-          <Typography.Title level={5} type="secondary">
+      <div className="basis-2/5 flex justify-center items-end">
+        <div className="w-full h-full bg-white xl:w-[53.125rem] 2xl:w-[65rem] p-5 mb-5 mx-5 sm:mx-0 rounded-lg dark:bg-secondaryDark dark:border dark:border-solid dark:border-borderDark">
+          <Typography.Title
+            level={5}
+            type="secondary"
+            className="dark:text-textDark"
+          >
             Summary
           </Typography.Title>
           <TextArea
             autoSize={{ minRows: 5, maxRows: 10 }}
             bordered={false}
-            className="w-full flex-1 border-0 p-0 mt-2"
+            className="w-full flex-1 border-0 p-0 mt-2 dark:bg-secondaryDark dark:text-textDark"
             value={note.summary}
             onChange={(e) => {
               setNote((prevNote) => ({

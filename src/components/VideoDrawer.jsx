@@ -1,6 +1,7 @@
 import { Flex, Avatar, Button, Input, Typography, message, Spin } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSubscription } from "../context/SubscriptionContext";
 
 import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
@@ -13,6 +14,16 @@ function VideoDrawer({ note, setNote }) {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    subscribedPlan,
+    subscribedPlans,
+    cancelledPlans,
+    credits,
+    videoConversion,
+    audioConversion,
+    updateSubscriptionPlan,
+  } = useSubscription();
+
   const { data: avatars } = useQuery({
     queryKey: ["avatars"],
     queryFn: async () => {
@@ -64,21 +75,23 @@ function VideoDrawer({ note, setNote }) {
   const handleGenerateVideo = async () => {
     try {
       if (
-        !selectedAvatar.photoId &&
-        !note.summary &&
-        !selectedVoice.voice_id &&
+        !selectedAvatar.photoId ||
+        !note.summary ||
+        !selectedVoice.voice_id ||
         !note._id
       ) {
         message.error("Please select a photo and voice");
         return;
       }
+
       setIsLoading(true);
-      // TODO add message when incomplete data
+
       const payload = {
         photoId: selectedAvatar.photoId,
         summary: note.summary,
         voiceId: selectedVoice.voice_id,
       };
+
       const { data } = await authAxios.post(
         `${API_URL}/heygens/generate-video`,
         payload
@@ -94,12 +107,58 @@ function VideoDrawer({ note, setNote }) {
           },
           type: "video",
         };
+
         const media = await authAxios.post(`${API_URL}/medias/`, mediaPayload);
         await generateVideoMutation.mutateAsync(mediaPayload);
         console.info({ media });
+
+        // Minus credits if generation is successful
+        const newCredits = credits ? credits - 5 : 0;
+        updateSubscriptionPlan(
+          subscribedPlan,
+          subscribedPlans,
+          cancelledPlans,
+          newCredits,
+          videoConversion,
+          audioConversion
+        );
+      } else {
+        // Extend the subscription date by one day if generation failed
+        const currentSubscription = subscribedPlans.find(
+          (sp) => sp.plan === subscribedPlan
+        );
+
+        if (currentSubscription) {
+          const currentExpirationDate = new Date(
+            currentSubscription.expiration
+          );
+          currentExpirationDate.setDate(currentExpirationDate.getDate() + 1);
+
+          const updatedSubscribedPlans = subscribedPlans.map((sp) =>
+            sp.plan === subscribedPlan
+              ? {
+                  ...sp,
+                  expiration: currentExpirationDate.toLocaleDateString(),
+                }
+              : sp
+          );
+
+          // Update state and context
+          updateSubscriptionPlan(
+            subscribedPlan,
+            updatedSubscribedPlans,
+            cancelledPlans,
+            credits,
+            videoConversion,
+            audioConversion
+          );
+        }
       }
     } catch (error) {
-      console.info({ error });
+      console.error("Error generating video:", error);
+      message.error("Failed to generate video. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 

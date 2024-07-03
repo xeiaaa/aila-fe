@@ -9,7 +9,7 @@ import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
 
 const { Title } = Typography;
-const   ProfilePage = () => {
+const ProfilePage = () => {
   const { data: profile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
@@ -31,12 +31,18 @@ const   ProfilePage = () => {
     },
   });
 
+  const getInitial = (name) => {
+    return name ? name.charAt(0).toUpperCase() : <UserOutlined />;
+  };
+
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex flex-col items-center justify-center gap-2">
-        <Avatar icon={<UserOutlined />} size={50} />
+    <div className="flex items-center justify-center p-9 md:p-0">
+      <div className="flex flex-col items-center justify-center gap-3">
+        <Avatar size={50} className="dark:bg-textDark dark:text-black">
+          {getInitial(profile?.name)}
+        </Avatar>
         <Button
-          className="flex items-center"
+          className="flex items-center dark:bg-transparent dark:text-textDark"
           icon={
             profile && profile.isEmailVerified ? (
               <CheckCircleFilled className="text-xl text-green-500" />
@@ -50,10 +56,20 @@ const   ProfilePage = () => {
         >
           {profile && profile.isEmailVerified ? "Verified" : "Verify Email"}
         </Button>
-        <Title level={3} className="!mb-0">
-          {profile && profile.name}
+        <Title level={3} className="!mb-0 dark:text-textDark">
+          {profile?.name ? (
+            profile.name
+          ) : (
+            "Loading..."
+          )}
         </Title>
-        <span>{profile && profile.email}</span>
+        <span>
+          {profile?.email ? (
+            profile.email
+          ) : (
+            "Loading..."
+          )}
+        </span>
       </div>
     </div>
   );

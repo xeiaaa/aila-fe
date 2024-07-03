@@ -1,5 +1,6 @@
 import { Flex, Button, Input, Typography, message, Spin } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSubscription } from "../context/SubscriptionContext";
 
 import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
@@ -10,6 +11,16 @@ import VoiceModal from "./VoicesModal";
 function AudioDrawer({ note, setNote }) {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    subscribedPlan,
+    subscribedPlans,
+    cancelledPlans,
+    credits,
+    videoConversion,
+    audioConversion,
+    updateSubscriptionPlan,
+  } = useSubscription();
+
   const { data: avatars } = useQuery({
     queryKey: ["avatars"],
     queryFn: async () => {
@@ -62,42 +73,93 @@ function AudioDrawer({ note, setNote }) {
         summary: note.summary,
         voiceId: selectedVoice.voice_id,
       };
-      const { data } = await authAxios.post(
-        `${API_URL}/heygens/generate-video`,
-        payload
-      );
 
-      if (data && data.data && data.data.video_id) {
-        const mediaPayload = {
-          note: note._id,
-          metaData: {
-            videoId: data.data.video_id,
-            photoId: avatars.results[0].photoId,
-            voiceId: selectedVoice.voice_id,
-          },
-          type: "audio",
-        };
-        const media = await authAxios.post(`${API_URL}/medias/`, mediaPayload);
-        await generateVideoMutation.mutateAsync(mediaPayload);
-        console.info({ media });
+      if (import.meta.env.VITE_HEYGEN_API_KEY) {
+        // Minus credits
+        const newCredits = credits ? credits - 5 : 0;
+
+        updateSubscriptionPlan(
+          subscribedPlan,
+          subscribedPlans,
+          cancelledPlans,
+          newCredits,
+          videoConversion,
+          audioConversion
+        );
+
+        const { data } = await authAxios.post(
+          `${API_URL}/heygens/generate-video`,
+          payload
+        );
+
+        if (data && data.data && data.data.video_id) {
+          const mediaPayload = {
+            note: note._id,
+            metaData: {
+              videoId: data.data.video_id,
+              photoId: avatars.results[0].photoId,
+              voiceId: selectedVoice.voice_id,
+            },
+            type: "audio",
+          };
+          const media = await authAxios.post(
+            `${API_URL}/medias/`,
+            mediaPayload
+          );
+          await generateVideoMutation.mutateAsync(mediaPayload);
+          console.info({ media });
+        }
+      } else {
+        // Extend the subscription date by one day
+        const currentSubscription = subscribedPlans.find(
+          (sp) => sp.plan === subscribedPlan
+        );
+
+        if (currentSubscription) {
+          const currentExpirationDate = new Date(
+            currentSubscription.expiration
+          );
+          currentExpirationDate.setDate(currentExpirationDate.getDate() + 1);
+
+          const updatedSubscribedPlans = subscribedPlans.map((sp) =>
+            sp.plan === subscribedPlan
+              ? {
+                  ...sp,
+                  expiration: currentExpirationDate.toLocaleDateString(),
+                }
+              : sp
+          );
+
+          // Update state and context
+          updateSubscriptionPlan(
+            subscribedPlan,
+            updatedSubscribedPlans,
+            cancelledPlans,
+            credits,
+            videoConversion,
+            audioConversion
+          );
+        }
+        setIsLoading(false);
       }
     } catch (error) {
       console.info({ error });
+      message.error("Failed to generate video. Please try again later.");
+      setIsLoading(false);
     }
   };
-
   if (!note) return null;
 
   return (
-    <div className="px-3 sm:px-7 py-3 sm:py-6 flex flex-col justify-between flex-1 bg-white h-full">
+    <div className="px-5 sm:px-7 py-5 sm:py-6 flex flex-col justify-between flex-1 bg-white h-full dark:bg-secondaryDark">
       <div className="flex flex-col justify-between gap-6 sm:gap-7">
         <div>
-          <Typography.Paragraph className="!mb-2 !text-base sm:!text-sm">
+          <Typography.Paragraph className="!mb-2 !text-base sm:!text-sm dark:text-textDark">
             Content Title
           </Typography.Paragraph>
 
           <Input
-            className="!border-t-0 !border-l-0 !border-r-0 !bg-transparent !rounded-none"
+            className="!border-t-0 !border-l-0 !border-r-0 !bg-transparent !rounded-none dark:text-textDark"
             name="title"
             value={(note && note.title) || ""}
             onChange={handleInputChange}
@@ -106,7 +168,7 @@ function AudioDrawer({ note, setNote }) {
 
         <Flex vertical gap={10}>
           <Flex vertical>
-            <Typography.Paragraph className="!mb-2 !text-base sm:!text-sm">
+            <Typography.Paragraph className="!mb-2 !text-base sm:!text-sm dark:text-textDark">
               Voice Type
             </Typography.Paragraph>
             <VoiceModal
@@ -122,7 +184,7 @@ function AudioDrawer({ note, setNote }) {
         block
         type="primary"
         size="large"
-        className="bg-primary hover:!bg-[#359EDD] h-12 sm:h-11"
+        className="bg-primary hover:!bg-[#359EDD] h-12 sm:h-11 dark:bg-primaryDark"
         disabled={isLoading}
         onClick={handleGenerateVideo}
       >
@@ -131,7 +193,7 @@ function AudioDrawer({ note, setNote }) {
         ) : (
           <div className="flex items-center justify-center gap-2">
             <img className="h-5 aspect-square" src={sparkleIcon} />
-            <Typography.Text className="text-white text-base sm:!text-base">
+            <Typography.Text className="text-white text-base sm:!text-base dark:text-textDark">
               Generate Audio
             </Typography.Text>
           </div>

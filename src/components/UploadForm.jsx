@@ -11,7 +11,7 @@ import {
   AudioOutlined,
 } from "@ant-design/icons";
 import authAxios from "../api/authAxios";
-import useNoteContext from "../hooks/useNoteContext";
+import useNoteContext from "../context/useNoteContext";
 const { Dragger } = Upload;
 
 const UploadForm = ({ type = "pdf", closeModal = () => {} }) => {
@@ -92,11 +92,12 @@ const UploadForm = ({ type = "pdf", closeModal = () => {} }) => {
   return (
     <form onSubmit={handleSubmitUpload} className="flex flex-col gap-3">
       <Flex gap={5} vertical>
-        <p>Note:</p>
+        <p className="dark:text-textDark">Note:</p>
         <Input
           placeholder="Enter note title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className="dark:!bg-transparent dark:placeholder:text-textDark"
         />
       </Flex>
       <Dragger
@@ -136,6 +137,7 @@ const UploadForm = ({ type = "pdf", closeModal = () => {} }) => {
           htmlType="submit"
           loading={loading}
           disabled={!title.trim() || !file}
+          className="dark:text-textDark"
         >
           Submit
         </Button>

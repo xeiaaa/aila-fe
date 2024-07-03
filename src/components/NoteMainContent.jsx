@@ -1,6 +1,6 @@
 import { Button, Empty, Flex, Tooltip } from "antd";
 
-import useNoteContext from "../hooks/useNoteContext";
+import useNoteContext from "../context/useNoteContext";
 import Note from "./Note";
 import CreateNoteModal from "./CreateNoteModal";
 import { LeftOutlined } from "@ant-design/icons";
@@ -73,13 +73,10 @@ const NoteMainContent = ({
           {showNoteTab ? (
             <Tooltip title="Close sidebar" placement="right" color={"#2db7f5"}>
               <div
-                className="hidden sm:block py-4 px-0.5 rounded-r-2xl cursor-pointer bg-background"
+                className="hidden sm:block py-4 px-0.5 rounded-r-2xl cursor-pointer bg-background dark:bg-secondaryDark border-t-2 border-r-2 border-b-2 border-l-0 border-solid border-t-secondary border-r-secondary border-b-secondary dark:border-borderDark"
                 style={{
                   transform:
                     "translateX(272px) translateY(-50%) rotate(0deg) translateZ(0px)",
-                  borderTop: "1px solid #E5E9EA",
-                  borderRight: "1px solid #E5E9EA",
-                  borderBottom: "1px solid #E5E9EA",
                 }}
               >
                 <LeftOutlined className="text-[#C5C9CA] text-xs" />
@@ -88,13 +85,10 @@ const NoteMainContent = ({
           ) : (
             <Tooltip title="Open sidebar" placement="right" color={"#2db7f5"}>
               <div
-                className="py-5 px-0.5 rounded-l-2xl cursor-pointer"
+                className="py-5 px-0.5 rounded-l-2xl cursor-pointer bg-background dark:bg-secondaryDark border-t-2 border-l-2 border-b-2 border-r-0 border-solid border-t-secondary border-l-secondary border-b-secondary dark:border-borderDark"
                 style={{
                   transform:
                     "translateX(0px) translateY(-50%) rotate(180deg) translateZ(0px)",
-                  borderTop: "1px solid #E5E9EA",
-                  borderLeft: "1px solid #E5E9EA",
-                  borderBottom: "1px solid #E5E9EA",
                 }}
               >
                 <LeftOutlined className="text-[#C5C9CA] text-xs" />
@@ -116,8 +110,8 @@ const NoteMainContent = ({
                       "translateX(-290px) translateY(-50%) translateZ(0px)",
                   }}
                 >
-                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full group-hover:-rotate-[20deg] transition-transform ease-in-out duration-300 -mb-0.5"></span>
-                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full group-hover:rotate-[20deg] transition-transform ease-in-out duration-300 -mt-0.5"></span>
+                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full group-hover:-rotate-[20deg] transition-transform ease-in-out duration-300 -mb-0.5 dark:bg-tertiaryDark"></span>
+                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full group-hover:rotate-[20deg] transition-transform ease-in-out duration-300 -mt-0.5 dark:bg-tertiaryDark"></span>
                 </div>
               </Tooltip>
             ) : (
@@ -129,8 +123,8 @@ const NoteMainContent = ({
                       "translateX(0px) translateY(-50%) translateZ(0px)",
                   }}
                 >
-                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full rounded-bl-full rotate-[20deg] transition-transform ease-in-out duration-300 -mb-0.5"></span>
-                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full rounded-tl-full -rotate-[20deg] transition-transform ease-in-out duration-300 -mt-0.5"></span>
+                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full rounded-bl-full rotate-[20deg] transition-transform ease-in-out duration-300 -mb-0.5 dark:bg-tertiaryDark"></span>
+                  <span className="bg-gray-200 group-hover:bg-gray-400 h-3.5 w-1 rounded-full rounded-tl-full -rotate-[20deg] transition-transform ease-in-out duration-300 -mt-0.5 dark:bg-tertiaryDark"></span>
                 </div>
               </Tooltip>
             )}
@@ -139,7 +133,7 @@ const NoteMainContent = ({
       </div>
       <Button
         type="primary"
-        className="sm:hidden flex justify-center items-center gap-2 absolute right-5 bottom-7 !bg-secondary active:!bg-[#45AD68] drop-shadow-md border-none rounded-full text-white text-base !h-12"
+        className="sm:hidden flex justify-center items-center gap-2 absolute right-5 bottom-7 !bg-primaryHover active:!bg-primaryHover drop-shadow-lg border-none rounded-full text-white text-base !h-12"
         onClick={toggleChatTab}
       >
         <RiRobot2Line className="text-xl" />

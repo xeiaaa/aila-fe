@@ -48,20 +48,22 @@ const UrlForm = ({ closeModal = () => {} }) => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <Flex gap={5} vertical>
-        <p>Note:</p>
+        <p className="dark:text-textDark">Note:</p>
         <Input
           placeholder="Enter note title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className="dark:!bg-transparent dark:placeholder:text-textDark"
         />
       </Flex>
       <Flex gap={5} vertical>
-        <p>Enter a valid website URL:</p>
+        <p className="dark:text-textDark">Enter a valid website URL:</p>
         <Flex vertical>
           <Input
             placeholder="Enter site url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            className="dark:!bg-transparent dark:placeholder:text-textDark"
           />
         </Flex>
       </Flex>
@@ -71,6 +73,7 @@ const UrlForm = ({ closeModal = () => {} }) => {
         style={{ alignSelf: "end" }}
         loading={loading}
         disabled={!title.trim() || !validateUrl(url)}
+        className="dark:text-textDark"
       >
         Submit
       </Button>

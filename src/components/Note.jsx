@@ -6,7 +6,6 @@ import {
   message,
   Typography,
   Tooltip,
-  Tour,
 } from "antd";
 import moment from "moment";
 import YouTube from "react-youtube";
@@ -17,7 +16,7 @@ import generatePDF, { Margin, Resolution } from "react-to-pdf";
 
 import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
-import useNoteContext from "../hooks/useNoteContext";
+import useNoteContext from "../context/useNoteContext";
 import NotesCategory from "./NotesCategory";
 import WarningArea from "./WarningArea";
 import CreateNoteModal from "./CreateNoteModal";
@@ -245,23 +244,24 @@ const Note = () => {
         <Flex vertical>
           <Typography.Title
             editable={{
-              icon: <EditOutlined className="text-primary" />,
+              icon: <EditOutlined className="text-primary dark:text-primaryDark" />,
               onChange: (e) => editMutation.mutateAsync(e),
               text: selectedNote.title,
             }}
             level={4}
+            className="dark:text-textDark"
           >
             {selectedNote.title}
           </Typography.Title>
-          <div className="flex flex-col gap-1">
-            <Typography.Text className="text-gray-400">
+          <div className="flex flex-col">
+            <Text type="secondary" className="dark:text-gray-400">
               Date Created: &nbsp;
               {moment(selectedNote.createdAt).format("MMM DD, YYYY")}
-            </Typography.Text>
-            <Typography.Text className="text-gray-400">
+            </Text>
+            <Text type="secondary" className="dark:text-gray-400">
               Last Update: &nbsp;
               {moment(selectedNote.updatedAt).format("MMM DD, YYYY")}
-            </Typography.Text>
+            </Text>
           </div>
         </Flex>
         <WarningArea id={selectedNote._id} onArchive={handleArchiveNote} />
@@ -288,12 +288,10 @@ const Note = () => {
       ) : (
         selectedNote.summary && (
           <>
-            <Flex className="bg-white rounded-lg p-5 shadow-md">
+            <Flex className="border border-solid border-[#E0E0E0] bg-white shadow rounded-lg p-5 dark:bg-secondaryDark dark:border-borderDark">
               <div className="flex-1" ref={targetRef}>
-                <Text className="text-gray-300" strong>
-                  Summary
-                </Text>
-                <p className="w-full mt-2">{selectedNote.summary}</p>
+                <Text type="secondary dark:text-gray-400">Summary</Text>
+                <p className="w-full mt-2 leading-6 text-sm sm:text-base dark:text-textDark">{selectedNote.summary}</p>
               </div>
               <Flex vertical className="pl-2">
                 <Tooltip title="Copy" color="#2db7f5">

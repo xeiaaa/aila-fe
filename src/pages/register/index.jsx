@@ -59,7 +59,7 @@ const Register = () => {
         <Flex vertical>
           <Flex gap={5} className="justify-center mb-5">
             <p className="text-lg font-bold">Sign up with</p>
-            <p className="text-lg font-bold border-0 border-b-4 border-solid border-b-secondary">
+            <p className="text-lg font-bold border-0 border-b-4 border-solid border-b-[#4DB571]">
               Email
             </p>
           </Flex>
@@ -93,7 +93,7 @@ const Register = () => {
                   },
                 ]}
               >
-                <Input className="border-t-0 border-l-0 border-r-0 rounded-none focus:shadow-none custom-input bg-transparent focus:border-secondary hover:border-secondary" />
+                <Input className="border-t-0 border-l-0 border-r-0 rounded-none focus:shadow-none custom-input bg-transparent focus:border-[#4DB571] hover:border-[#4DB571]" />
               </Form.Item>
 
               <Form.Item
@@ -108,7 +108,7 @@ const Register = () => {
                   },
                 ]}
               >
-                <Input className="border-t-0 border-l-0 border-r-0 rounded-none focus:shadow-none custom-input bg-transparent focus:border-secondary hover:border-secondary" />
+                <Input className="border-t-0 border-l-0 border-r-0 rounded-none focus:shadow-none custom-input bg-transparent focus:border-[#4DB571] hover:border-[#4DB571]" />
               </Form.Item>
 
               <Form.Item
@@ -122,7 +122,7 @@ const Register = () => {
                   },
                 ]}
               >
-                <Input.Password className="border-t-0 border-l-0 border-r-0 rounded-none custom-input bg-transparent focus:border-secondary hover:border-secondary" />
+                <Input.Password className="border-t-0 border-l-0 border-r-0 rounded-none custom-input bg-transparent focus:border-[#4DB571] hover:border-[#4DB571]" />
               </Form.Item>
             </Flex>
 
@@ -133,13 +133,13 @@ const Register = () => {
                   htmlType="submit"
                   disabled={isLoading}
                   loading={isLoading}
-                  className="bg-secondary hover:bg-white custom-button w-full h-12 rounded-xl"
+                  className="bg-[#4DB571] hover:bg-white custom-button w-full h-12 rounded-xl"
                 >
                   Create an account
                 </Button>
                 <p className="text-center">
                   Already have an account?&nbsp;
-                  <Link to="/signin" className="text-secondary">
+                  <Link to="/signin" className="text-[#4DB571]">
                     Sign In
                   </Link>
                 </p>

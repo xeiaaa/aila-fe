@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { NoteContext } from "../hooks/note-provider";
+import { NoteContext } from "../context/note-provider";
 import { Input, Flex, Typography, List, Button, message } from "antd";
 import { SearchOutlined, CaretRightOutlined } from "@ant-design/icons";
 
@@ -34,7 +34,7 @@ const History = () => {
   return (
     <Flex className="justify-center py-7">
       <Flex className="w-10/12" vertical>
-        <Title type="secondary" level={5}>
+        <Title type="secondary" level={5} className="dark:text-textDark">
           Search History
         </Title>
         <Flex className="flex flex-col sm:flex-row justify-center sm:justify-between items-center mt-3">
@@ -44,13 +44,13 @@ const History = () => {
             prefix={<SearchOutlined className="text-gray-400" />}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="mb-5 w-fit rounded-full"
+            className="mb-5 w-fit rounded-full dark:bg-tertiaryDark dark:border-borderDark dark:text-textDark"
           />
           <Button
             type="primary"
             danger
             onClick={handleDeleteHistoryBelow}
-            className="mb-3"
+            className="mb-3 dark:bg-red-800"
           >
             Delete history below
           </Button>
@@ -61,7 +61,7 @@ const History = () => {
           renderItem={(note) => (
             <List.Item
               onClick={() => handleNoteClick(note)}
-              className={`cursor-pointer ${
+              className={`cursor-pointer dark:text-textDark ${
                 selectedNote && selectedNote._id === note._id ? "selected" : ""
               }`}
             >
@@ -70,10 +70,11 @@ const History = () => {
                   {new Date(accessHistory[note._id]).toLocaleString()}
                 </span>
               )}
-              <CaretRightOutlined className=" text-gray-300 mx-2" />
+              <CaretRightOutlined className="text-gray-300 mx-2 dark:text-gray-500" />
               {note.title}
             </List.Item>
           )}
+          className="dark:bg-secondaryDark dark:border-borderDark"
         />
       </Flex>
     </Flex>

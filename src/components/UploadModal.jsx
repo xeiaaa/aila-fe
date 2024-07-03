@@ -84,7 +84,7 @@ const UploadModal = () => {
     <>
       <button
         onClick={showModal}
-        className="flex flex-col justify-center items-center w-auto h-auto !py-[0.375rem] !px-1.5 text-[0.5rem] gap-1.5 border border-dashed rounded-full bg-transparent border-primary text-primary hover:border-[#024264] hover:text-[#024264]"
+        className="flex flex-col justify-center items-center w-auto h-auto !py-[0.375rem] !px-1.5 text-[0.5rem] gap-1.5 border border-dashed rounded-full bg-transparent border-primary text-primary hover:border-tertiary"
       >
         <PlusOutlined />
         Upload

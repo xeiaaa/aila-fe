@@ -66,7 +66,7 @@ const Signin = () => {
         {/* header */}
         <Flex vertical>
           <Flex gap={5} className="justify-center mb-5">
-            <p className="text-lg font-bold border-0 border-b-4 border-solid border-b-secondary">
+            <p className="text-lg font-bold border-0 border-b-4 border-solid border-b-[#4DB571]">
               Login
             </p>
             <p className="text-lg font-bold">to AILA</p>
@@ -104,7 +104,7 @@ const Signin = () => {
                   },
                 ]}
               >
-                <Input className="border-t-0 border-l-0 border-r-0 rounded-none focus:shadow-none custom-input bg-transparent focus:!border-secondary hover:border-secondary" />
+                <Input className="border-t-0 border-l-0 border-r-0 rounded-none focus:shadow-none custom-input bg-transparent focus:!border-[#4DB571] hover:border-[#4DB571]" />
               </Form.Item>
 
               <Form.Item
@@ -118,10 +118,10 @@ const Signin = () => {
                   },
                 ]}
               >
-                <Input.Password className="border-t-0 border-l-0 border-r-0 rounded-none custom-input bg-transparent focus:!border-secondary hover:border-secondary" />
+                <Input.Password className="border-t-0 border-l-0 border-r-0 rounded-none custom-input bg-transparent focus:!border-[#4DB571] hover:border-[#4DB571]" />
               </Form.Item>
               <div className="text-center pt-5 absolute bottom-0 right-0 invisible">
-                <a href="#" className=" text-secondary">
+                <a href="#" className=" text-[#4DB571]">
                   Forgot Password?
                 </a>
               </div>
@@ -134,14 +134,14 @@ const Signin = () => {
                   htmlType="submit"
                   disabled={isLoading}
                   loading={isLoading}
-                  className="bg-secondary hover:bg-white custom-button h-12 rounded-xl"
+                  className="bg-[#4DB571] hover:bg-white custom-button h-12 rounded-xl"
                   block
                 >
                   Login
                 </Button>
                 <p className="text-center">
                   Don&apos;t have an account yet?&nbsp;
-                  <Link to="/register" className="text-secondary">
+                  <Link to="/register" className="text-[#4DB571]">
                     Sign up
                   </Link>
                 </p>

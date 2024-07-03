@@ -4,7 +4,7 @@ import NoteChatSidebar from "../../components/NoteChatSidebar";
 
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import useNoteContext from "../../hooks/useNoteContext";
+import useNoteContext from "../../context/useNoteContext";
 import { useWindowSize } from "../../hooks/useWindowSize";
 
 function Notes() {

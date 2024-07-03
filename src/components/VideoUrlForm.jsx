@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import authAxios from "../api/authAxios";
 import { API_URL } from "../config";
-import useNoteContext from "../pages/notes/hooks/useNoteContext";
+import useNoteContext from "../pages/notes/context/useNoteContext";
 
 const VideoUrlForm = () => {
   const queryClient = useQueryClient();

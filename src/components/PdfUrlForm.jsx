@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { API_URL } from "../config";
 import authAxios from "../api/authAxios";
-import useNoteContext from "../pages/notes/hooks/useNoteContext";
+import useNoteContext from "../pages/notes/context/useNoteContext";
 
 const PdfUrlForm = () => {
   const [url, setUrl] = useState("");
